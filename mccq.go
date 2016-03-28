@@ -172,11 +172,14 @@ func medianCutApply(v vbox) (v1, v2 vbox) {
 		return v, v2
 	}
 
+	var cutColor string
 	var total, sum int
 	partialsum := make(map[int]int)
 	lookaheadsum := make(map[int]int)
 
 	if maxw == rw {
+		cutColor = "r"
+
 		for i := v.r1; i < v.r2+1; i++ {
 			sum = 0
 			for j := v.g1; j < v.g2+1; j++ {
@@ -190,6 +193,8 @@ func medianCutApply(v vbox) (v1, v2 vbox) {
 		}
 
 	} else if maxw == gw {
+		cutColor = "g"
+
 		for i := v.g1; i < v.g2+1; i++ {
 			sum = 0
 			for j := v.r1; j < v.r2+1; j++ {
@@ -203,6 +208,8 @@ func medianCutApply(v vbox) (v1, v2 vbox) {
 		}
 
 	} else {
+		cutColor = "b"
+
 		for i := v.b1; i < v.b2+1; i++ {
 			sum = 0
 			for j := v.r1; j < v.r2+1; j++ {
@@ -221,5 +228,30 @@ func medianCutApply(v vbox) (v1, v2 vbox) {
 		lookaheadsum[i] = total - d
 	}
 
+	var dim1, dim2 int
+	switch cutColor {
+	case "r":
+		dim1, dim2 = v.r1, v.r2
+	case "g":
+		dim1, dim2 = v.g1, v.g2
+	case "b":
+		dim1, dim2 = v.b1, v.b2
+	default:
+	}
+	for i := dim1; i < dim2+1; i++ {
+		if partialsum[i] > (total / 2) {
+			vbox1 := v
+			vbox2 := v
+			left := i - dim1
+			right := dim2 - i
+			if left <= right {
+				d2 := min(dim2-1, i+(right/2))
+			} else {
+				d2 := max(dim1, i-1-(left/2))
+			}
+			// Avoid 0-count boxes
+
+		}
+	}
 	return v1, v2
 }
